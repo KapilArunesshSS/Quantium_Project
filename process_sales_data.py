@@ -1,37 +1,44 @@
-import pandas as pd
+import csv
 import os
 
-# Input CSVs
-files = [
-    "data/daily_sales_data_0.csv",
-    "data/daily_sales_data_1.csv",
-    "data/daily_sales_data_2.csv"
-]
+DATA_DIRECTORY = "./data"
+OUTPUT_FILE_PATH = "./output/output.csv"
 
-# Make sure output folder exists
-os.makedirs("output", exist_ok=True)
+# make sure output directory exists
+os.makedirs("./output", exist_ok=True)
 
-dfs = []
+# collect all processed rows here
+rows = []
 
-for file in files:
-    df = pd.read_csv(file)
+# iterate through all files in the data directory
+for file_name in os.listdir(DATA_DIRECTORY):
+    if file_name.endswith(".csv"):  # only process CSVs
+        with open(f"{DATA_DIRECTORY}/{file_name}", "r") as input_file:
+            reader = csv.reader(input_file)
+            row_index = 0
+            for input_row in reader:
+                if row_index > 0:  # skip header
+                    product = input_row[0]
+                    raw_price = input_row[1]
+                    quantity = input_row[2]
+                    transaction_date = input_row[3]
+                    region = input_row[4]
 
-    # Only keep Pink Morsels
-    df = df[df["product"] == "pink morsel"]
+                    if product.lower() == "pink morsel":
+                        # remove $ from price and convert
+                        price = float(raw_price.replace("$", ""))
+                        sale = price * int(quantity)
 
-    # Compute Sales
-    df["Sales"] = df["quantity"] * df["price"]
+                        rows.append([sale, transaction_date, region])
+                row_index += 1
 
-    # Keep only required columns
-    df = df[["Sales", "date", "region"]]
+# sort rows by date then region
+rows.sort(key=lambda x: (x[1], x[2]))
 
-    dfs.append(df)
+# write to output file
+with open(OUTPUT_FILE_PATH, "w", newline="") as output_file:
+    writer = csv.writer(output_file)
+    writer.writerow(["sales", "date", "region"])  # header
+    writer.writerows(rows)
 
-# Combine all into one DataFrame
-final_df = pd.concat(dfs, ignore_index=True)
-
-# Save inside output/ folder
-output_path = "output/output.csv"
-final_df.to_csv(output_path, index=False)
-
-print(f"Output saved to {output_path}")
+print(f"Cleaned & sorted output saved to {OUTPUT_FILE_PATH}")
