@@ -1,27 +1,30 @@
-name: test
+name: Run Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.13'
+          python-version: '3.10'  # adjust if needed
 
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install pytest pytest-cov requests
+          python -m pip install --upgrade pip
+          pip install pytest
 
       - name: Run tests
         run: |
-          pytest --maxfail=1 --disable-warnings -q
-
+          pytest -q --disable-warnings
 
