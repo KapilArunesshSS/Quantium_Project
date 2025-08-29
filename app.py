@@ -34,7 +34,7 @@ fig.add_annotation(x=price_increase_date, y=data['sales'].max(),
 # Layout
 app.layout = dbc.Container([
     dbc.Row([
-        dbc.Col(html.H1("Sales Dashboard",
+        dbc.Col(html.H1("Pink Morsel Visualizer",
                         className="text-center text-primary mb-4"), width=12)
     ]),
     dbc.Row([
