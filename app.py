@@ -18,42 +18,59 @@ data = load_data()
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX])
 app.title = "Soul Foods Sales Dashboard"
 
-# Layout
 app.layout = dbc.Container([
-    # Header
-    dbc.Row([
-        dbc.Col(html.H1("Soul Foods Sales Dashboard",
-                        className="text-center mb-4",
-                        style={"color": "#3a4750", "fontWeight": "bold"}), width=12)
-    ]),
+    dbc.Card([
+        # Title Bar
+        dbc.CardHeader(
+            html.H2("Pink Morsel Visualizer",
+                    className="text-center",
+                    style={"fontWeight": "bold", "margin": "0"}),
+            style={
+                "backgroundColor": "#d3cce3",   # light purple/grey strip
+                "borderTopLeftRadius": "15px",
+                "borderTopRightRadius": "15px",
+                "textAlign": "center"
+            }
+        ),
 
-    # Radio buttons
-    dbc.Row([
-        dbc.Col([
-            html.Label("Select Region:", style={"fontWeight": "bold", "fontSize": "18px"}),
-                dcc.RadioItems(
-                    id="region-filter",
-                    options=[
-                        {"label": "All", "value": "all"},
-                        {"label": "North", "value": "north"},
-                        {"label": "East", "value": "east"},
-                        {"label": "South", "value": "south"},
-                        {"label": "West", "value": "west"}
-                    ],
-                    value="all",  # default
-                    inline=True,
-                    inputStyle={"margin-right": "8px", "margin-left": "12px"},
-                    labelStyle={"margin-right": "20px", "fontSize": "16px"}
-                )
+        dbc.CardBody([
+            # Line Chart
+            dbc.Row([
+                dbc.Col(dcc.Graph(id="sales-graph", style={"height": "70vh"}), width=12)
+            ]),
 
-        ], width=12)
-    ]),
-
-    # Line Chart
-    dbc.Row([
-        dbc.Col(dcc.Graph(id="sales-graph", style={"height": "80vh"}), width=12)
-    ])
+            # Radio buttons (center + bottom)
+            dbc.Row([
+                dbc.Col([
+                    dcc.RadioItems(
+                        id="region-filter",
+                        options=[
+                            {"label": "north", "value": "north"},
+                            {"label": "east", "value": "east"},
+                            {"label": "south", "value": "south"},
+                            {"label": "west", "value": "west"},
+                            {"label": "all", "value": "all"}
+                        ],
+                        value="all",
+                        inline=True,
+                        inputStyle={"margin-right": "6px", "margin-left": "10px"},
+                        labelStyle={"margin-right": "15px", "fontSize": "16px"}
+                    )
+                ], width="auto", className="text-center")
+            ], justify="center", className="mt-3")
+        ])
+    ],
+    style={
+        "backgroundColor": "white",       # plain background
+        "border": "2px solid #ccc",       # simple grey border
+        "borderRadius": "15px",           # rounded corners
+        "padding": "10px",
+        "boxShadow": "2px 4px 12px rgba(0,0,0,0.1)"
+    })
 ], fluid=True)
+
+
+
 
 
 # Callback to update chart
