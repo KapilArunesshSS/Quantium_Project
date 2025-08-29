@@ -43,6 +43,10 @@ jobs:
 
       - name: Run Dash tests
         env:
-          DASH_TEST_HEADLESS: "1"   # 👈 ensures Selenium runs Chrome headless
+          DASH_TEST_HEADLESS: "1"          # ✅ force Chrome headless
+          DASH_TEST_BROWSER: "chrome"      # ✅ ensure Chrome is used
+          _DASH_TEST_CHROME_PATH: "/usr/bin/google-chrome"
+          DASH_TEST_CHROMEDRIVER_PATH: "/usr/local/bin/chromedriver"
         run: |
           pytest -q test_app.py --disable-warnings --maxfail=1
+
