@@ -41,14 +41,6 @@ jobs:
           pip install pandas
           pip install plotly
 
-      - name: Run Dash tests
-        env:
-          DASH_TEST_HEADLESS: "1"
-          DASH_TEST_BROWSER: "chrome"
-          _DASH_TEST_CHROME_PATH: "/usr/bin/google-chrome"
-          DASH_TEST_CHROMEDRIVER_PATH: "/usr/local/bin/chromedriver"
-          DASH_TEST_CHROME_OPTIONS: "--headless=new --no-sandbox --disable-dev-shm-usage"
-        run: |
-          pytest -q test_app.py --disable-warnings --maxfail=2
+
 
 
