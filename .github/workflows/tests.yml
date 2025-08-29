@@ -17,8 +17,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo "No dependencies to install"
+          pip install --upgrade pip
+          pip install pytest pytest-cov requests
 
       - name: Run tests
         run: |
-          python -m unittest discover
+          pytest --maxfail=1 --disable-warnings -q
+
