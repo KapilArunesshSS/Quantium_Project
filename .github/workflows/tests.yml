@@ -17,7 +17,20 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.13'   
+          python-version: '3.13'
+
+      - name: Install Google Chrome and Chromedriver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget gnupg unzip xvfb
+          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -fy install
+          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
+          DRIVER_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${CHROME_VERSION%%.*}")
+          wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$DRIVER_VERSION/linux64/chromedriver-linux64.zip"
+          unzip chromedriver-linux64.zip
+          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/chromedriver
 
       - name: Install dependencies
         run: |
@@ -25,10 +38,11 @@ jobs:
           pip install pytest
           pip install "dash[testing]"
           pip install dash-bootstrap-components
-          pip install pandas 
+          pip install pandas
           pip install plotly
 
       - name: Run Dash tests
+        env:
+          DASH_TEST_HEADLESS: "1"   # 👈 ensures Selenium runs Chrome headless
         run: |
           pytest -q test_app.py --disable-warnings --maxfail=1
-
